@@ -6,13 +6,9 @@
 #define BRIGHTNESS 100
 
   static DS3231 RTC;
-  CRGB leds[NUM_LEDS];
-
-    CRGBPalette16 currentPalette;
-    TBlendType    currentBlending;
-    
+  CRGBArray<NUM_LEDS> leds;
 void setup() {
-  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812, LED_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
   RTC.begin();
   Serial.begin(9600);
@@ -58,77 +54,156 @@ void setup() {
     RTC.startClock();
   }
 
-    int i;
-    for(i = 0; i < NUM_LEDS+1; i++){
-    leds[i] = CRGB(255, 255, 255);
-    leds[i-1] = CRGB(0, 0, 0);
-    delay(10);
-    FastLED.show();
-    }
-    
-    for(i = 0; i < NUM_LEDS+1; i++){
-    leds[i] = CRGB(255, 0, 0);
-    leds[i-1] = CRGB(0, 0, 0);
-    delay(10);
-    FastLED.show();
-    }
 
-    for(i = 0; i < NUM_LEDS+1; i++){
-    leds[i] = CRGB(0, 255, 0);
-    leds[i-1] = CRGB(0, 0, 0);
-    delay(10);
-    FastLED.show();
-    }
+  static uint8_t hue;
+  for(int i = 0; i < (NUM_LEDS/2)+25; i++) {   
+    leds.fadeToBlackBy(40);
 
-    for(i = 0; i < NUM_LEDS+1; i++){
-    leds[i] = CRGB(0, 0, 255);
-    leds[i-1] = CRGB(0, 0, 0);
-    delay(10);
-    FastLED.show();
-    }
+    leds[i] = CHSV(hue+=3,255,255);
+      
+    leds(NUM_LEDS/2,NUM_LEDS-1) = leds(NUM_LEDS/2 - 1 ,0);
+    FastLED.delay(45);
+  }
+
 
 }
 
   
 void loop() {
-    currentPalette = RainbowColors_p;
-    currentBlending = LINEARBLEND;
+
+  //Happy Birthday Iman!
+  if (RTC.getMonth()==10 && RTC.getDay()==27){
+    happyb();
+    birth();
+    day();
+    iman();
+  }
+
+  //Happy Birthday Me!
+  if (RTC.getMonth()==6 && RTC.getDay()==3){
+    happyb();
+    birth();
+    day();
+    derek();
+  }
+
+  //Happy anniversary! <3
+  if (RTC.getMonth()==1 && RTC.getDay()==10){
+    happyb();
+    anni();
+    versary();
+  }
+
   switch(RTC.getHours()){
     case 1:
-      one();
+      if (RTC.getMinutes() < 30){
+        one();
+        wipetwelve();
+      } else {
+        two();
+        wipeone();
+      }
+
       break;
     case 2:
-      two();
+      if (RTC.getMinutes() < 30){
+        wipeone();
+        two();
+      } else {
+        wipetwo();
+        three();
+      }
+      
       break;
     case 3:
-      three();
+      if (RTC.getMinutes() < 30){
+        wipetwo();
+        three();
+      } else {
+        wipethree();
+        four();
+      }
       break;
     case 4:
-      four();
+      if (RTC.getMinutes() < 30){
+        wipethree();
+        four();
+      } else {
+        wipefour();
+        fiveh();
+      }
       break;
     case 5:
-      fiveh();
+      if (RTC.getMinutes() < 30){
+        wipefour();
+        fiveh();
+      } else {
+        wipefiveh();
+        six();
+      }
       break;
     case 6:
-      six();
+      if (RTC.getMinutes() < 30){
+        wipefiveh();
+        six();
+      } else {
+        wipesix();
+        seven();
+      }
       break;
     case 7:
-      seven();
+      if (RTC.getMinutes() < 30){
+        wipesix();
+        seven();
+      } else {
+        wipeseven();
+        eight();
+      }
       break;
     case 8:
-      eight();
+      if (RTC.getMinutes() < 30){
+        wipeseven();
+        eight();
+      } else {
+        wipeeight();
+        nine();
+      }
       break;
     case 9:
-      nine();
+      if (RTC.getMinutes() < 30){
+        wipeeight();
+        nine();
+      } else {
+        wipenine();
+        tenh();
+      }
       break;
     case 10:
-      tenh();
+      if (RTC.getMinutes() < 30){
+        wipenine();
+        tenh();
+      } else {
+        wipetenh();
+        eleven();
+      }
       break;
     case 11:
-      eleven();
+      if (RTC.getMinutes() < 30){
+        wipetenh();
+        eleven();
+      } else {
+        wipeeleven();
+        twelve();
+      }
       break;
     case 12:
-      twelve();
+      if (RTC.getMinutes() < 30){
+        wipeeleven();
+        twelve();
+      } else {
+        wipetwelve();
+        one();
+      }
       break;
   }
       if(RTC.getMinutes() < 5){
@@ -194,29 +269,72 @@ void loop() {
       }
 }
 
-    
-void happy(uint8_t colorIndex){
-  uint8_t brightness = 255;
-      for( int i = 23; i <= 227; i++) {
-        leds[i] = ColorFromPalette( RainbowColors_p, colorIndex, 100, LINEARBLEND);
-        colorIndex += 3;
-    }
+static uint8_t hue;
+
+void happyb(){
+  for (int i=23; i<=27; i++){
+    leds[i] = CHSV(hue++,255,255);
+  }
 }
 
+void birth(){
+    for (int i=38; i<=42; i++){
+    leds[i] = CHSV(hue++,255,255);
+  }
+}
+
+void day(){
+    for (int i=46; i<=48; i++){
+    leds[i] = CHSV(hue++,255,255);
+  }
+}
+
+void iman(){
+    for (int i=62; i<=65; i++){
+    leds[i] = CHSV(hue++,255,255);
+  }
+}
+
+void derek(){
+    for (int i=50; i<=54; i++){
+    leds[i] = CHSV(hue,255,255);
+  }
+}
+
+void happya(){
+  for (int i=23; i<=27; i++){
+    leds[i] = CHSV(105,255,255);
+    }
+  }
 
 
+void anni(){
+    for (int i=59; i<=63; i++){
+    leds[i] = CHSV(105,255,255);
+  }
+}
 
+void versary(){
+    for (int i=67; i<=73; i++){
+    leds[i] = CHSV(105,255,255);
+  }
+}
 
+//=========================================================================================//
+//                                 Declaring Words In Clock                                //
+//=========================================================================================//
 
-
-//==================================================================================
-
+// I realized how to do this better, but I'm not fixing what isnt broken
 void its(){
-leds[0] = CRGB(255, 255, 255);leds[1] = CRGB(255, 255, 255);leds[2] = CRGB(255, 255, 255);leds[3] = CRGB(255, 255, 255);FastLED.show();
+    for (int i=0; i<=3; i++){
+    leds[i] = CRGB(255,255,255);
+  }
 }
 
 void twenty(){
-  leds[5] = CRGB(255, 255, 255);leds[6] = CRGB(255, 255, 255);leds[7] = CRGB(255, 255, 255);leds[8] = CRGB(255, 255, 255);leds[9] = CRGB(255, 255, 255);leds[10] = CRGB(255, 255, 255);FastLED.show();
+    for (int i=5; i<=10; i++){
+      leds[i] = CRGB(255,255,255);
+    }
 }
 
 void tenm(){
@@ -231,45 +349,18 @@ void fivem(){
   leds[28] = CRGB(255, 255, 255);leds[29] = CRGB(255, 255, 255);leds[30] = CRGB(255, 255, 255);leds[31] = CRGB(255, 255, 255);FastLED.show();
 }
 
-//void happy(){
-//  leds[23] = CRGB(255, 255, 255);leds[24] = CRGB(255, 255, 255);leds[25] = CRGB(255, 255, 255);leds[26] = CRGB(255, 255, 255);leds[27] = CRGB(255, 255, 255);FastLED.show();
-//}
-
 void half(){
   leds[33] = CRGB(255, 255, 255);leds[34] = CRGB(255, 255, 255);leds[35] = CRGB(255, 255, 255);leds[36] = CRGB(255, 255, 255);FastLED.show();
-}
-
-void birth(){
-  leds[38] = CRGB(255, 255, 255);leds[39] = CRGB(255, 255, 255);leds[40] = CRGB(255, 255, 255);leds[41] = CRGB(255, 255, 255);leds[42] = CRGB(255, 255, 255);FastLED.show();
 }
 
 void to(){
   leds[44] = CRGB(255, 255, 255);leds[45] = CRGB(255, 255, 255);FastLED.show();
 }
 
-void day(){
-  leds[46] = CRGB(255, 255, 255);leds[47] = CRGB(255, 255, 255);leds[48] = CRGB(255, 255, 255);FastLED.show();
-}
-
-void derek(){
-  leds[50] = CRGB(255, 255, 255);leds[51] = CRGB(255, 255, 255);leds[52] = CRGB(255, 255, 255);leds[53] = CRGB(255, 255, 255);leds[54] = CRGB(255, 255, 255);FastLED.show();
-}
-
 void past(){
   leds[55] = CRGB(255, 255, 255);leds[56] = CRGB(255, 255, 255);leds[57] = CRGB(255, 255, 255);leds[58] = CRGB(255, 255, 255);FastLED.show();
 }
 
-void anni(){
-  leds[59] = CRGB(255, 255, 255);leds[60] = CRGB(255, 255, 255);leds[61] = CRGB(255, 255, 255);leds[62] = CRGB(255, 255, 255);leds[63] = CRGB(255, 255, 255);FastLED.show();
-}
-
-void iman(){
-  leds[62] = CRGB(255, 255, 255);leds[63] = CRGB(255, 255, 255);leds[64] = CRGB(255, 255, 255);leds[65] = CRGB(255, 255, 255);FastLED.show();
-}
-
-void versary(){
-  leds[67] = CRGB(255, 255, 255);leds[68] = CRGB(255, 255, 255);leds[69] = CRGB(255, 255, 255);leds[70] = CRGB(255, 255, 255);leds[71] = CRGB(255, 255, 255);leds[72] = CRGB(255, 255, 255);leds[73] = CRGB(255, 255, 255);FastLED.show();
-}
 
 void two(){
   leds[74] = CRGB(255, 255, 255);leds[75] = CRGB(255, 255, 255);leds[76] = CRGB(255, 255, 255);FastLED.show();
@@ -317,14 +408,14 @@ void four() {
 
 void pm(){
   leds[121] = CRGB(255, 255, 255);leds[122] = CRGB(255, 255, 255);FastLED.show();
-  }
+}
 
 void am(){
   leds[124] = CRGB(255, 255, 255);leds[125] = CRGB(255, 255, 255);FastLED.show();
 }
 
 void eleven(){
-  leds[125] = CRGB(255, 255, 255);leds[126] = CRGB(255, 255, 255);leds[127] = CRGB(255, 255, 255);leds[128] = CRGB(255, 255, 255);leds[129] = CRGB(255, 255, 255);leds[130] = CRGB(255, 255, 255);leds[131] = CRGB(255, 255, 255);FastLED.show();
+  leds[126] = CRGB(255, 255, 255);leds[127] = CRGB(255, 255, 255);leds[128] = CRGB(255, 255, 255);leds[129] = CRGB(255, 255, 255);leds[130] = CRGB(255, 255, 255);leds[131] = CRGB(255, 255, 255);FastLED.show();
 }
 
 void wipeAll(){
@@ -442,12 +533,12 @@ void wipefour() {
 
 void wipepm(){
   leds[121] = CRGB(0, 0, 0);leds[122] = CRGB(0, 0, 0);FastLED.show();
-  }
+}
 
 void wipeam(){
   leds[124] = CRGB(0, 0, 0);leds[125] = CRGB(0, 0, 0);FastLED.show();
 }
 
 void wipeeleven(){
-  leds[125] = CRGB(0, 0, 0);leds[126] = CRGB(0, 0, 0);leds[127] = CRGB(0, 0, 0);leds[128] = CRGB(0, 0, 0);leds[129] = CRGB(0, 0, 0);leds[130] = CRGB(0, 0, 0);leds[131] = CRGB(0, 0, 0);FastLED.show();
+leds[126] = CRGB(0, 0, 0);leds[127] = CRGB(0, 0, 0);leds[128] = CRGB(0, 0, 0);leds[129] = CRGB(0, 0, 0);leds[130] = CRGB(0, 0, 0);leds[131] = CRGB(0, 0, 0);FastLED.show();
 }
